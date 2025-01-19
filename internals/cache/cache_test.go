@@ -23,14 +23,14 @@ func setup() (*redis.Client, context.Context) {
 	return redis_client, ctx
 }
 
-func shutdown(redisClient *redis.Client, context context.Context) {
+func shutdown(context context.Context, redisClient *redis.Client) {
 	redisClient.Del(context, "abc1234")
 	defer redisClient.Conn().Close()
 }
 
 func TestAdd(t *testing.T) {
 	redisClient, context := setup()
-	defer shutdown(redisClient, context)
+	defer shutdown(context, redisClient)
 	cacheHandler := NewCacheHandler(context, redisClient)
 	entry := &models.Entry{Url: "https://g1.globo.com/", ShortUrl: "abc1234"}
 	err := cacheHandler.Add(entry)
@@ -51,7 +51,7 @@ func TestAdd(t *testing.T) {
 
 func TestGet(t *testing.T) {
 	redisClient, context := setup()
-	defer shutdown(redisClient, context)
+	defer shutdown(context, redisClient)
 	redisClient.Set(context, "abc1234", "https://g1.globo.com/", 0)
 	cacheHandler := NewCacheHandler(context, redisClient)
 	expected := "https://g1.globo.com/"

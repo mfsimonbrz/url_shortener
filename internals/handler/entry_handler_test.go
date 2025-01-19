@@ -36,7 +36,7 @@ func setup() (*sql.DB, *redis.Client, context.Context, error) {
 	return db, redis_client, ctx, nil
 }
 
-func shutdown(db *sql.DB, redisClient *redis.Client, context context.Context) error {
+func shutdown(context context.Context, db *sql.DB, redisClient *redis.Client) error {
 	_, err := db.Exec("DELETE FROM public.entries")
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func shutdown(db *sql.DB, redisClient *redis.Client, context context.Context) er
 
 func TestAddUrlEntry(t *testing.T) {
 	db, redisClient, context, err := setup()
-	defer shutdown(db, redisClient, context)
+	defer shutdown(context, db, redisClient)
 
 	if err != nil {
 		t.Error(err)
@@ -84,7 +84,7 @@ func TestAddUrlEntry(t *testing.T) {
 
 func TestRetrieveUrl(t *testing.T) {
 	db, redisClient, context, err := setup()
-	defer shutdown(db, redisClient, context)
+	defer shutdown(context, db, redisClient)
 
 	if err != nil {
 		t.Error(err)

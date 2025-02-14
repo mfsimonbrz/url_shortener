@@ -23,8 +23,7 @@ func (h *EntryWebHandler) GetEntry(c *gin.Context) {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": err})
 	}
 
-	c.IndentedJSON(http.StatusOK, gin.H{"url": fullUrl})
-
+	c.Redirect(http.StatusMovedPermanently, fullUrl)
 }
 
 func (h *EntryWebHandler) AddUrlEntry(c *gin.Context) {
